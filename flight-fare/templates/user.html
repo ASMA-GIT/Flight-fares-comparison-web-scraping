@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/user.css" />
+    <title>Webpage</title>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin_signup">
+                
+                <div class="sign-in-form">
+                    <h2 class="title">Sign in</h2>
+                    <div class="input-field">
+                        <input type="text" id="email2" placeholder="Email" />
+                    </div>
+                    <div class="input-field">
+                        <input type="password" id="password2" placeholder="Password" />
+                    </div>
+                    <button class="btn solid" id="login">LOGIN</button>
+                        
+                </div>
+
+                <div class="sign-up-form">
+                    <h2 class="title">Sign up</h2>
+                    <div class="input-field">
+                        <input type="text" placeholder="Fullname" />
+                    </div>
+                    <div class="input-field">
+                        <input type="text" id="email" placeholder="Email" />
+                    </div>
+                    <div class="input-field">
+                        <input type="password" id="password" placeholder="Password" />
+                    </div>
+                    <div class="input-field">
+                        <input type="date" placeholder="Date of birth" />
+                    </div>
+                    <div class="input-field">
+                        <fieldset>
+                        <input type="radio" class="m" value="male" name="gender" />F
+                        <input type="radio" class="f" value="female" name="gender"/>M
+                        </fieldset>
+                    </div>
+                    <button class="btn " id="reg">Sign up</button>
+
+                </div>
+            </div>
+            
+        </div>
+   
+
+
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                        <h3>New here ?</h3>
+                        <button class="btn transparent" id="sign-up-btn">
+                            Sign up
+                        </button>
+                </div>
+            </div>
+            <div class="panel right-panel">
+                <div class="content">
+                <h3>One of us ?</h3>
+                <button class="btn transparent" id="sign-in-btn">
+                    Sign in
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="module">
+        
+    const sign_in_btn = document.querySelector("#sign-in-btn");
+    const sign_up_btn = document.querySelector("#sign-up-btn");
+    const container = document.querySelector(".container");
+
+    sign_up_btn.addEventListener("click", () => {
+    container.classList.add("sign-up-mode");
+    });
+
+    sign_in_btn.addEventListener("click", () => {
+    container.classList.remove("sign-up-mode");
+    });
+
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.8.4/firebase-auth.js";
+import { getDatabase,set,ref, update } from "https://www.gstatic.com/firebasejs/9.8.4/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBnUvG_UzyxZI5ftuYo-P4LZuHyM3Tp6Mk",
+  authDomain: "registration-page-3536c.firebaseapp.com",
+  databaseURL: "https://registration-page-3536c-default-rtdb.firebaseio.com",
+  projectId: "registration-page-3536c",
+  storageBucket: "registration-page-3536c.appspot.com",
+  messagingSenderId: "916336943501",
+  appId: "1:916336943501:web:2d5d204f9f600bc605ddc4"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        reg.addEventListener('click',(e) =>{
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+
+    set(ref(database, 'users/' + user.uid), {
+    email: email,
+    password: password
+  })
+  .then(() => {
+  // Data saved successfully!
+  alert('Registered Successfully');
+})
+.catch((error) => {
+  // The write failed...
+  alert(error);
+});
+
+
+    
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(errorMessage);
+    // ..
+  });
+           
+});
+
+login.addEventListener('click',(e) =>{
+      var email2 = document.getElementById('email2').value;
+      var password2 = document.getElementById('password2').value;
+      signInWithEmailAndPassword(auth, email2, password2)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    var lgDate=new Date();
+
+    update(ref(database, 'users/' + user.uid), {
+    last_login : lgDate,
+  })
+  .then(() => {
+  // Data saved successfully!
+  alert('Login Successful Welcome Back to Registration page');
+  window.location.href="index.html";
+})
+.catch((error) => {
+  // The write failed...
+  alert(error);
+});
+
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(errorMessage);
+  });
+
+  signOut(auth).then(() => {
+  // Sign-out successful.
+}).catch((error) => {
+  // An error happened.
+});
+
+});
+</script>
+
+</body>
+</html>
